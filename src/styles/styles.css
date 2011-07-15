@@ -1,0 +1,140 @@
+@CHARSET "UTF-8";
+
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, code, del, dfn, em, img, q, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, dialog, figure, footer, header, hgroup, nav, section {margin:0;padding:0;border:0;font-weight:inherit;font-style:inherit;font-size:100%;font-family:inherit;vertical-align:baseline;}
+article, aside, dialog, figure, footer, header, hgroup, nav, section {display:block;}
+body {line-height:1.5;}
+table {border-collapse:separate;border-spacing:0;}
+caption, th, td {text-align:left;font-weight:normal;}
+table, td, th {vertical-align:middle;}
+blockquote:before, blockquote:after, q:before, q:after {content:"";}
+blockquote, q {quotes:"" "";}
+a img {border:none;}
+
+body { 
+    background-color: #e2e2e2;
+    color:#444; font:100%/1 Arial, Helvetica, sans-serif; 
+}
+
+.container {
+    margin: 0 auto;
+    padding: 10px;
+    max-width: 600px;
+    *width: 600px;
+    background-color:#fff;
+    overflow: auto;
+    -moz-border-radius: 0px 0px 15px 15px;
+    -webkit-border-radius: 0px 0px 15px 15px;
+    border-radius: 0px 0px 15px 15px;
+    -webkit-box-shadow: #666 0px 2px 3px;
+    -moz-box-shadow: #666 0px 2px 3px;
+    box-shadow: #666 0px 2px 3px;
+    border: 2px solid #777;
+    border-top: 0;
+    behavior: url(PIE.htc);
+}
+
+.cp {
+    cursor: pointer;
+}
+
+a {
+    color: #000;
+}
+
+.header, .content {
+    /*margin: 5px;*/
+    width: 100%;
+    clear: both;
+    /*float: left;*/
+}
+
+.header {
+    /*height: 2.2em;*/
+    margin-bottom: 10px;
+}
+
+h1 { 
+    font-size: 300%;
+    font-family: Georgia,"Bitstream Charter","Century Schoolbook L","Liberation Serif",Times,serif;
+    color: #6690CB;
+     
+    /*position: relative;
+    padding-bottom: 0.1em;
+    right: 100px;*/
+}
+
+h2 { 
+    font-size: 150%;
+    color: #6690CB;
+    margin-bottom: 5px;     
+    /*position: relative;
+    padding-bottom: 0.1em;
+    right: 100px;*/
+}
+
+#mainPanel {
+    margin: 0 10px 10px 0;
+}
+ 
+#pasteDialog {
+    display: none;
+}
+ 
+#pasteDialog textarea {
+    width: 100%;
+} 
+.panel {
+    display: none;
+    clear: both;
+    margin: 0 10px 10px 0;
+    line-height: 1.1;
+}
+
+.panel td, .panel th {
+    padding: 3px;
+    border: 1px solid #A6C9E2;
+    vertical-align: top;
+}
+
+.panel th {
+    font-weight: bold;
+    text-align: center;
+}
+
+.panel table {
+    border-collapse: collapse;
+    border: 1px solid #A6C9E2;
+}
+
+#helpPanel table {
+    /*width: 200px;*/
+}
+
+.buttons {
+    margin: 10px 0;
+}
+
+.button {
+    *width: 150px;
+}
+
+.smallButtons {
+    margin: 10px 0;
+    font-size: 60%;    
+}
+
+.inline {
+    /*float: left; margin-right: 10px;*/
+    display: inline-block;
+    *display: inline;
+}
+
+ul,
+ol {
+    padding: 0 0 0 20px;
+}
+
+.panel li {
+    line-height: 1.2;
+    /*padding: 3px 0 3px 0;*/
+}
