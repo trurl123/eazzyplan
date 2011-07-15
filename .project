@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>EasyPlan</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>com.rockstarapps.jslint.JsLintBuilder</name>
+			<arguments>
+				<dictionary>
+					<key>buildAll</key>
+					<value>false</value>
+				</dictionary>
+				<dictionary>
+					<key>external_defines</key>
+					<value></value>
+				</dictionary>
+				<dictionary>
+					<key>properties</key>
+					<value>params = {passfail: false,debug: false,undef: true,white: false,evil: false,nomen: false,browser: false,cap: false,eqeqeq: true,widget: false,on: false,plusplus: false,sidebar: false,fragment: false,bitwise: false,rhino: false,laxbreak: false,regexp: false,safe: false,forin: false,onevar: false,adsafe: false,sub: true,strict: false,css: false,newcap: true,maxerrors:50,indent:4};</value>
+				</dictionary>
+				<dictionary>
+					<key>selection</key>
+					<value>src/scripts/jqgrid.treeEditor.js&lt;--&gt;src/scripts/messageBox.js</value>
+				</dictionary>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>com.aptana.editor.php.aptanaPhpBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>com.aptana.ide.core.unifiedBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.ui.externaltools.ExternalToolBuilder</name>
+			<triggers>auto,full,incremental,</triggers>
+			<arguments>
+				<dictionary>
+					<key>LaunchConfigHandle</key>
+					<value>&lt;project&gt;/.externalToolBuilders/Ant builder.launch</value>
+				</dictionary>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>com.aptana.editor.php.phpNature</nature>
+	</natures>
+	<filteredResources>
+		<filter>
+			<id>1310652532035</id>
+			<name></name>
+			<type>10</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-projectRelativePath-matches-false-true-(release|www|build)</arguments>
+			</matcher>
+		</filter>
+	</filteredResources>
+</projectDescription>
