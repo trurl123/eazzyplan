@@ -143,6 +143,10 @@ ol {
     /*padding: 3px 0 3px 0;*/
 }
 
-.footer {
+.footer small {
 	font-size: 70%;
+}
+
+.yashare-auto-init {
+    margin-left: -6px;
 }
