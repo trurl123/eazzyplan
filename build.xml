@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="EazzyPlan" default="_debug" basedir="./src">
+	<description>
+        simple example build file
+    </description>
+	<property name="build" location="../build" />
+	<mkdir dir="${build}" />
+
+	<target name="_release" depends="release.prop, copy, js.minify" description="Release build">
+	</target>
+	<target name="release.prop">
+		<property name="output" location="../www/release" />
+	</target>
+
+	<target name="_debug" depends="debug.prop, copy, js.copy" description="Debug build">
+	</target>
+	<target name="debug.prop">
+		<property name="output" location="../www/debug" />
+	</target>
+
+	<target name="js.concatenate">
+		<concat destfile="${build}/main.js">
+			<fileset dir="./scripts" >
+				<include name="*.js"/>
+				<exclude name="*.min.js"/>
+				<exclude name="jqgrid.treeEditor.js"/>
+			</fileset>
+			<fileset dir="./scripts" includes="jqgrid.treeEditor.js" />
+		</concat>
+	</target>
+
+	<target name="js.minify" depends="js.concatenate">
+		<mkdir dir="${output}/scripts" />
+		<copy todir="${output}">
+			<fileset dir="." includes="scripts/LAB.min.js" />
+		</copy>
+		<apply executable="java" parallel="false" dest="${output}/scripts">
+			<!--fileset dir="./scripts" includes="*.js" excludes="*.min.js"  /-->
+			<fileset file="${build}/main.js" />
+			<arg line="-jar" />
+			<arg path="${js.compiler}" />
+			<arg line="-o" />
+			<mapper type="glob" from="*.js" to="*.min.js" />
+			<targetfile />
+		</apply>
+	</target>
+
+	<target name="copy">
+		<mkdir dir="${output}" />
+		<copy todir="${output}">
+			<fileset dir="." excludes="scripts/**" />
+		</copy>
+	</target>
+
+	<target name="js.copy">
+		<mkdir dir="${output}/scripts" />
+		<copy todir="${output}">
+			<fileset dir="." includes="scripts/**" />
+		</copy>
+	</target>
+
+	<target name="clean">
+		<delete includeemptydirs="true">
+			<fileset dir="../www" />
+		</delete>
+	</target>
+
+</project>
