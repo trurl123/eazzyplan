@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="lightweight project plan editor" />
+    <title>Eazzy plan</title>
+    <link rel="stylesheet" href="styles/redmond/jquery-ui-1.8.14.custom.css" type="text/css" />
+    <link rel="stylesheet" href="styles/ui.jqgrid.css" type="text/css" />
+    <link rel="stylesheet" href="styles/styles.css" type="text/css" />
+
+    <script src="scripts/LAB.min.js" type="text/javascript"></script>
+    <!--script src="scripts/jquery-1.5.2.min.js" type="text/javascript"></script-->
+    <!--script src="scripts/jquery-1.5.2.min.js" type="text/javascript"></script>
+    <script src="scripts/jquery-ui-1.8.14.custom.min.js" type="text/javascript" ></script>
+    <script src="scripts/jquery.jqGrid.src.js" type="text/javascript"></script>
+    <script src="scripts/jqgrid.treeEditor.js" type="text/javascript"></script>
+    <script src="scripts/jquery.debounce-1.0.5.min.js" type="text/javascript"></script>
+
+    <script src="scripts/json-serialization.min.js"loadScript/javascript"></script>
+    <script src="scripts/ZeroClipboard.miscript"text/javascript" ></script--> 
+    <script type="text/javascript">
+        if (document.URL.indexOf('/debug') == -1) {
+            productionMode = true;
+            $LAB
+                .script("http://yandex.st/jquery/1.6.2/jquery.min.js").wait()
+                .script("http://yandex.st/jquery-ui/1.8.11/jquery-ui.min.js")
+                .script("scripts/main.min.js").wait(
+                    function(){
+                       $.initPlanEditor();
+                    }
+                );
+        } else {
+            productionMode = false;
+            $LAB
+                .script("scripts/jquery-1.5.2.min.js").wait()
+                .script("scripts/jquery-ui-1.8.14.custom.min.js")
+                .script("scripts/jquery.jqGrid.js")
+                .script("scripts/jqgrid.treeEditor.js")
+                .script("scripts/messageBox.js")
+                .script("scripts/jquery.debounce-1.0.5.js")
+                .script("scripts/json-serialization.js")
+                .script("scripts/ZeroClipboard.js").wait(
+                    function(){
+                       $.initPlanEditor();
+                    }
+                );
+        }
+        var Browser = {
+          Version: function() {
+            var version = 999; // we assume a sane browser
+            if (navigator.appVersion.indexOf("MSIE") != -1)
+              // bah, IE again, lets downgrade version number
+              version = parseFloat(navigator.appVersion.split("MSIE")[1]);
+            return version;
+          }
+        }
+        if (Browser.Version() < 9 || window.localStorage == undefined) {
+            alert('Your browser is too old. Please upgrade your browser.');
+        }        
+    </script>
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-9540714-7']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>   
+</head>
+<body>
+<div class='container'>
+    <div class='header'><h1>Eazzy plan</h1>
+    </div>
+    <div class='content'>
+        <div id='mainPanel'>
+            <table id="tasklist" summary="">
+            </table>
+            <div class='buttons'>
+                <div id='saveBtn' class='button inline'>Save</div>
+            </div>
+            <div class='smallButtons'>
+                <div id="rtfBtnOwner" style="position:relative;" class="inline">
+                    <div id='rtfBtn' class='button' >Copy table</div>
+                </div>
+                <div id="csvBtnOwner" style="position:relative;" class="inline">
+                    <div id='csvBtn' class='button' >Copy CSV</div>
+                </div>
+                <div id='pasteBtn' class='button inline'>Import CSV</div>
+            </div>
+            <div class='smallButtons'>
+                <div id='helpBtn' class='button panelButton' >Help</div>
+                <div id='featuresBtn' class='button panelButton' >Features</div>
+                <div id='historyBtn' class='button panelButton' >History</div>
+            </div>
+        </div>
+        <div id='helpPanel' class='panel'>
+            <h2>Keyboard shortcuts</h2>
+            <table summary="Keyboard shortcuts">
+                <tr><th>Shortcut</th><th>Description</th></tr>
+                <tr><td>Ctrl+Up</td><td>Move up</td></tr>
+                <tr><td>Ctrl+Down</td><td>Move down</td></tr>
+                <tr><td>Ctrl+Left</td><td>Move left</td></tr>
+                <tr><td>Ctrl+right</td><td>Move right</td></tr>
+                <tr><td>Insert</td><td>Insert row after current</td></tr>
+                <tr><td>Alt+Insert</td><td>Insert row before current</td></tr>
+                <tr><td>F2</td><td>Edit</td></tr>
+                <tr><td>Del</td><td>Remove subtree</td></tr>
+            </table>
+        </div>
+        <div id='featuresPanel' class='panel'>
+            <h2>Features</h2>
+            <ul>
+                <li>Autosave</li>
+                <li>Ultra light</li>
+                <li>Copy table to clipboard</li>
+                <li>All data is stored in your browser</li>
+                <li>Export/import</li>
+            </ul>
+        </div>
+        <div id='historyPanel' class='panel'>
+            <h2>History</h2>
+            <ul>
+                <li>2001-07-15: version 1.2
+                    <ul>
+                        <li>Added disqus</li>
+                        <li>Added total duration</li>
+                    </ul>
+                </li>
+                <li>2001-07-11: version 1.1
+                    <ul>
+                        <li>Added help and other panels</li>
+                        <li>Improved copy to clipboard</li>
+                        <li>Added import/export to csv</li>
+                    </ul>
+                </li>
+                <li>2001-07-11: version 1.0</li>
+            </ul>
+        </div>
+        <div id='pasteDialog' >
+            <div>Paste text into text area and press Import. All data will be lost.</div>
+            <textarea rows="10" cols="40" id='pasteText'></textarea>
+        </div>
+		<div id="disqus_thread"></div>
+		<script type="text/javascript">
+		    var disqus_shortname = 'eazzyplan'; // required: replace example with your forum shortname
+		
+		    // The following are highly recommended additional parameters. Remove the slashes in front to use.
+		    var disqus_identifier = 'eazzyplan';
+		    var disqus_url = 'http://wiki4tech.ru/eazzyplan/';
+		    if (!productionMode) {
+		    	var disqus_developer = 1;
+		    }
+		
+		    /* * * DON'T EDIT BELOW THIS LINE * * */
+		    (function() {
+		        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+		        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+		    })();
+		</script>
+        
+    </div>
+</div>
+    <script type="text/javascript">
+    </script>
+</body>
+</html>
