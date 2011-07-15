@@ -740,8 +740,27 @@ $.extend({
                 if ($(".panel").is(":visible")) {
                     $(".panel").hide();
                 }
-                pan.show('slow');
-                $('html,body').animate( {scrollTop: pan.offset().top }, 1000);
+                pan.show('fast', function() {
+                    if (this.id === 'disqusPanel' && window.disqus_shortname === undefined) {
+                        window.disqus_shortname = 'eazzyplan'; // required: replace example with your forum shortname
+                    
+                        // The following are highly recommended additional parameters. Remove the slashes in front to use.
+                        var disqus_identifier = 'eazzyplan';
+                        var disqus_url = 'http://wiki4tech.ru/eazzyplan/';
+                        if (!window.productionMode) {
+                            var disqus_developer = 1;
+                        }
+                    
+                        /* * * DON'T EDIT BELOW THIS LINE * * */
+                        (function() {
+                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                            dsq.src = 'http://' + window.disqus_shortname + '.disqus.com/embed.js';
+                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                        })();
+                    }
+                });
+                
+                //$('html,body').animate( {scrollTop: pan.offset().top }, 1000);
             } else {
                 pan.hide('slow');
             }
