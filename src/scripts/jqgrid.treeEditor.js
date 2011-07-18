@@ -638,6 +638,7 @@
 $.extend({
     initPlanEditor: function() {
         var t = $("#tasklist"), $t = t[0], id;
+        window.disqus_shortname = undefined;
         t.jqGrid({
             treeGrid: true,
             treeGridModel: 'adjacency',

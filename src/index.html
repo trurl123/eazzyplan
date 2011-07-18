@@ -96,7 +96,14 @@
                 <div id='helpBtn' class='button panelButton' >Help</div>
                 <div id='featuresBtn' class='button panelButton' >Features</div>
                 <div id='historyBtn' class='button panelButton' >History</div>
+                <div id='disqusBtn' class='button panelButton' >Disqus</div>
             </div>
+        </div>
+
+        <div id='disqusPanel' class='panel' >
+            <div id="disqus_thread"></div>
+            <script type="text/javascript">
+            </script>
         </div>
         
         <div id='helpPanel' class='panel'>
@@ -147,25 +154,6 @@
             <div>Paste text into text area and press Import. All data will be lost.</div>
             <textarea rows="10" cols="40" id='pasteText'></textarea>
         </div>
-		<div id="disqus_thread"></div>
-		<script type="text/javascript">
-		    var disqus_shortname = 'eazzyplan'; // required: replace example with your forum shortname
-		
-		    // The following are highly recommended additional parameters. Remove the slashes in front to use.
-		    var disqus_identifier = 'eazzyplan';
-		    var disqus_url = 'http://wiki4tech.ru/eazzyplan/';
-		    if (!productionMode) {
-		    	var disqus_developer = 1;
-		    }
-		
-		    /* * * DON'T EDIT BELOW THIS LINE * * */
-		    (function() {
-		        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-		        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-		        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-		    })();
-		</script>
-        
     </div>
     <div class='footer'>
         <script type="text/javascript" src="//yandex.st/share/share.js" charset="utf-8"></script>
