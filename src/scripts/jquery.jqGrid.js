@@ -8203,7 +8203,7 @@ $.jgrid.extend({
                                 $($t).jqGrid("saveRow", rowid, o );
                                 return false;
                             } else if (e.which === 38 || e.which === 40 || e.which === 45 || 
-                                ((e.which === 37 || e.which === 39 ) && e.ctrlKey)
+                                ((e.which === 37 || e.which === 39 || e.which === 46) && e.ctrlKey)
                                       ) 
                             { //up
                                 return true;

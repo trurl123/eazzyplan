@@ -79,7 +79,7 @@
             if (wasEdit) {
                 t.startEdit(r);
                 if (aria) {
-                    $("td[aria-describedby='"+aria+"'] input",r). focus();
+                    $("td[aria-describedby='"+aria+"'] input",r).focus().select();
                 }                
             }
         }
@@ -404,7 +404,7 @@
         if (!$t.raiseSaveHandler) {
             $t.raiseSaveHandler = $.debounce( 
             function() { 
-                t.saveToLocalStorage(); 
+                t.savePlan(); 
             }, 5000 );    
         }
         if ($t.p.onRaiseSave) {
@@ -413,24 +413,48 @@
         $t.raiseSaveHandler();
     },
     
-    saveToLocalStorage: function() {
+    exportJSON: function() {
         var t = this, 
             id, ids, stor = [],
-            oldStor, $t = t[0];
-        try {    
-            oldStor = JSON.parse(localStorage['tasklist']);
-        } catch (e) {
-            
-        }
+            $t = t[0];
         ids = t.getDataIDs();
         $.each(ids, function() {
             id = this;
             stor.push(t.getRc(id));
         });
-        localStorage['tasklist'] = JSON.stringify(stor);
-        if ($t.p.onSave) {
-            $t.p.onSave();
+        return JSON.stringify(stor);
+    },
+
+    savePlan: function(callback) {
+        var t = this, 
+            $t = t[0];
+        if ($t.planShared) {
+            $.callAJAX({ action: 'savePlan', id: window.location.hash.substr(1), userid: localStorage['userid'], plan: t.exportJSON()}, function(result) {
+                if (result) {
+                    if (callback) {
+                        callback();
+                    }
+                    if ($t.p.onSave) {
+                        $t.p.onSave();
+                    } 
+                } else {
+                }
+            },'json');
+        } else {
+            t.saveToLocalStorage();
+            if (callback) {
+                callback();
+            }
+            if ($t.p.onSave) {
+                $t.p.onSave();
+            } 
         } 
+    },
+    
+    saveToLocalStorage: function() {
+        var t = this, 
+            $t = t[0];
+        localStorage['tasklist'] = t.exportJSON();
     }, 
 
     fixLoadedList: function(stor) {
@@ -492,6 +516,19 @@
         	} 
         }
     },
+
+    importJSON: function(json) {
+        var t = this, 
+            rc, 
+            stor, i;
+        try {    
+            stor = JSON.parse(json);
+            t.loadArray(stor);
+            return true;
+        } catch (e) {
+        }
+        return false;
+    },
     
     loadFromLocalStorage: function() {
         var t = this, 
@@ -511,6 +548,7 @@
 	        for (i=1; i<=3; i++) {
                 t.updateRow(t.getRc(i));
 			}
+            t.recalcDuration(null);
             return;
         }
         t.loadArray(stor);
@@ -520,12 +558,16 @@
         if (!row) {
             return;
         }
-        var t = this, $t = t[0]; 
+        var t = this, $t = t[0], duration; 
         if (!$t.lastEdited  || row.id!==$t.lastEdited) {
             if ($t.lastEdited) {
                 t.finishEdit();
             }
             $t.lastEdited=row.id;
+            duration = t.getCell($t.lastEdited,'duration');
+            if (duration === "0") {
+                t.setCell($t.lastEdited,'duration',"",false,false,true); 
+            }
             t.editRow(row.id,true,null,null,'clientArray',{},
                 function() { 
                     t.setSelection($t.lastEdited,false);
@@ -564,6 +606,7 @@
             border = "border: 1px solid black;",
             padding = "padding: 3px;",
             stdStyle = border + padding,
+            footerStyle = border + "padding: 10px 3px 3px 3px; font-weight: bold;",
             headStyle = "text-align:center; "+stdStyle, fontSize;
         ids = t.getDataIDs();
         result += "<table style='"+border+" border-collapse: collapse;'><tr>"+
@@ -577,6 +620,9 @@
                 rc.name + "</td><td style='text-align:right; "+stdStyle+"'>" + 
                 (rc.duration).toString() + "</td>" +"</tr>";
         });
+        result += "<tr><td style='"+footerStyle+"'>" + 
+             "</td><td style='text-align:right; "+footerStyle+"'>" + 
+            t.footerData("get").duration.toString() + "</td>" +"</tr>";
         result += "</table>";
         return result;
     },
@@ -628,9 +674,48 @@
         }
         t.loadArray(stor);
         t.raiseSave();
+    },
+    
+    initFocus: function() {
+        var t=this, $t=t[0], id;
+        t.focus();
+        if ($t.p.data && $t.p.data.length) {
+            id = $t.p.data[0].id;
+            t.setSelection(id,false);
+            $(t.getRow(id)).focus();
+        }
     }
 
 });})(jQuery);
+
+$.callAJAX = function(postData, func) {
+    $.post('ajax.php',postData, function(data, textStatus) {
+        if (!data) {
+            $.showPopup('Something goes wrong...');
+        } else if (data.error !== undefined) {
+            $.showPopup(data.error);
+        } else if (data.ok !== undefined) {
+            func(data.result);
+        } else {
+            $.showPopup('Something goes wrong: ' + data);
+        }
+    },'json');
+};
+
+$.createUUID = function () {
+    // http://www.ietf.org/rfc/rfc4122.txt
+    var s = [];
+    var hexDigits = "0123456789ABCDEF";
+    for (var i = 0; i < 32; i++) {
+        s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+    }
+    s[12] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
+    s[16] = hexDigits.substr((s[16] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
+
+    var uuid = s.join("");
+    return uuid;
+};
+
 
 
 (function($) {
@@ -638,6 +723,9 @@
 $.extend({
     initPlanEditor: function() {
         var t = $("#tasklist"), $t = t[0], id;
+        if (localStorage['userid'] === undefined || localStorage['userid'] === null || localStorage['userid'].length!==32) {
+            localStorage['userid'] = $.createUUID(); 
+        }
         window.disqus_shortname = undefined;
         t.jqGrid({
             treeGrid: true,
@@ -673,67 +761,93 @@ $.extend({
             if (target) {
                 rc = t.getRc(target.id);
             }
-            if(event.which === 38 && !event.ctrlKey) {
+            //up arrow
+            if(event.which === 38 && !event.ctrlKey && !event.altKey && !event.shiftKey) {
+                event.preventDefault();
                 t.selPrevRow(target);
             }
             //if key is down arrow
-            else if(event.which === 40 && !event.ctrlKey) {
+            else if(event.which === 40 && !event.ctrlKey && !event.altKey && !event.shiftKey) {
+                event.preventDefault();
                 t.selNextRow(target);
             }
             //insert
-            else if(event.which === 45) {
-                t.insertEmpty(rc, !!event.altKey);
+            else if(event.which === 45 && !event.ctrlKey && !event.shiftKey) {
+                event.preventDefault();
+                t.insertEmpty(rc, !event.altKey);
             }
             if (target) {
                 //up arrow
-                if(event.which === 38 && event.ctrlKey) {
+                if(event.which === 38 && event.ctrlKey && event.altKey && !event.shiftKey) {
                     t.moveUp(rc);
+                    event.preventDefault();
                 }
                 //if key is down arrow
-                else if(event.which === 40 && event.ctrlKey) {
+                else if(event.which === 40 && event.ctrlKey && event.altKey && !event.shiftKey) {
                     t.moveDown(rc);
+                    event.preventDefault();
                 }
                 //left
-                else if(event.which === 37 && event.ctrlKey) {
+                else if(event.which === 37 && event.ctrlKey && event.altKey && !event.shiftKey) {
                     t.moveLeft(rc);
+                    event.preventDefault();
                 }
                 // right
-                else if(event.which === 39 && event.ctrlKey) {
+                else if(event.which === 39 && event.ctrlKey && event.altKey && !event.shiftKey) {
                     t.moveRight(rc);
+                    event.preventDefault();
                 }
                 //F2
-                else if(event.which === 113) {
+                else if(event.which === 113 && !event.ctrlKey && !event.altKey && !event.shiftKey) {
                     t.startEdit(target);
+                    event.preventDefault();
                 }
                 //delete
-                else if(event.which === 46) {
+                else if(event.which === 46 && event.ctrlKey && !event.altKey && !event.shiftKey) {
+                    event.preventDefault();
                     $.okCancelDialog('Remove item and all subitems?','Remove',
                         function() { 
-                                    $(this).dialog("close"); 
-                                    t.deleteSubtree(rc);
-                        },
-                        function() { $(this).dialog("close"); }
+                            //$(this).dialog("close"); 
+                            t.deleteSubtree(rc);
+                        }
                     );
                 }
             }
         });
 
-        if (window.localStorage !== undefined) {
-            t.loadFromLocalStorage();
-        }
-        t.focus();
-        if ($t.p.data && $t.p.data.length) {
-            id = $t.p.data[0].id;
-            t.setSelection(id,false);
-            $(t.getRow(id)).focus();
+        $t.planShared = false;
+        if (window.location.hash !== "") {
+            $.callAJAX({ action: 'getPlan', id: window.location.hash.substr(1), userid: localStorage['userid']}, function(result) {
+                var own = result.substr(0,1);
+                result = result.substr(1);
+                if (t.importJSON(result)) {
+                    if (own === "1") {
+                        $t.planShared = true;
+                        $.showPopup('Loaded your own plan');
+                        $("#shareBtn").button({ label: 'Unshare' });
+                    } else {
+                        $.messageBox('Loaded shared plan. All changes will not be uploaded to server.','Loaded');
+                    }
+                }
+                if (!$t.planShared) {
+                    window.location.hash = "";
+                }
+                t.initFocus();
+            });            
+        } else {
+            if (window.localStorage !== undefined) {
+                t.loadFromLocalStorage();
+            }
+            t.initFocus();
         }
         
         $(".button").button();
         $("#saveBtn").button({ disabled: true });
         $("#saveBtn").click( function() {
         	t.finishEdit(true);
-            t.saveToLocalStorage();        
-            $.showPopup('Successfully saved');
+            t.savePlan(function() {
+                $.showPopup('Successfully saved');
+            });
         });
         $(".panelButton").click( function() {
             var pan = $("#"+this.id.replace(/Btn/,'')+'Panel');
@@ -821,6 +935,26 @@ $.extend({
         //            console.debug("Flash movie loaded and ready.");
         //        });                                    
         clip2.glue( 'csvBtn','csvBtnOwner');
+        
+        $('#shareBtn').click(function() {
+            if ($t.planShared) {
+                $.okCancelDialog('Stop to store current plan to server?','Unshare',function() {
+                    $t.planShared = false;
+                    $("#shareBtn").button({ label: 'Share' });
+                    window.location.hash = "";
+                    t.savePlan();
+                });
+            } else {
+                $.okCancelDialog('Save plan to server and share?','Share',function() {
+                    $.callAJAX({ action: 'createPlan', plan: t.exportJSON(), userid: localStorage['userid']}, function(result) {
+                        window.location.hash = '#'+result;
+                        $.messageBox('The plan is saved to server. Now you can send current URL to friends and use it to edit.');
+                        $("#shareBtn").button({ label: 'Unshare' });
+                        $t.planShared = true;
+                    },'json');
+                });
+            }
+        });
     }
 });
 

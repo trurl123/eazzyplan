@@ -10,13 +10,32 @@ $.extend({
 
 })(jQuery);*/
 
-$.okCancelDialog = function(text, title, onOk, onCancel) {
+$.messageBox = function(text, title) {
     var buttons = {};
     if (!$('#okCancelDialog').length) {
         $('body').append("<div id='okCancelDialog' style='display: none'></div>");
     }
-    buttons[title] = onOk;
-    buttons["Cancel"] = onCancel;
+    if (!title) {
+        title = "Notification";
+    }
+    buttons["Close"] = function() { $(this).dialog("close"); };
+    $('#okCancelDialog').html(text).dialog(
+        { 
+            buttons: buttons,
+            modal: true,
+            width: '350px',
+            title: title
+        }
+    );
+};
+
+$.okCancelDialog = function(text, title, onOk) {
+    var buttons = {};
+    if (!$('#okCancelDialog').length) {
+        $('body').append("<div id='okCancelDialog' style='display: none'></div>");
+    }
+    buttons[title] = function() { onOk(); $(this).dialog("close"); };
+    buttons["Cancel"] = function() { $(this).dialog("close"); };
     $('#okCancelDialog').html(text).dialog(
         { 
             buttons: buttons,

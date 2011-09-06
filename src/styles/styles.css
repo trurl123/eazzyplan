@@ -55,21 +55,21 @@ a {
 
 h1 { 
     font-size: 300%;
-    font-family: Georgia,"Bitstream Charter","Century Schoolbook L","Liberation Serif",Times,serif;
-    color: #6690CB;
-     
+    /*font-family: Georgia,"Bitstream Charter","Century Schoolbook L","Liberation Serif",Times,serif;*/
+    font-weight: bold; 
     /*position: relative;
     padding-bottom: 0.1em;
     right: 100px;*/
+    color: #6690CB;
 }
 
 h2 { 
     font-size: 150%;
-    color: #6690CB;
     margin-bottom: 5px;     
     /*position: relative;
     padding-bottom: 0.1em;
     right: 100px;*/
+    color: #6690CB;
 }
 
 #mainPanel {
@@ -149,4 +149,8 @@ ol {
 
 .yashare-auto-init {
     margin-left: -6px;
+}
+
+#disqusPanel {
+    min-height: 50px;
 }
