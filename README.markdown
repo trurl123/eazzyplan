@@ -1,9 +1,32 @@
-Ultra light project plan editor. It's a simple tool to create tree structure 
-of tasks with automatic calculation of duration. All data stored in browser using HTML5 feature.
-Main feature is working with keyboard. It helps to create plans rapidly.
+Ultra light project plan editor. 
 
 ### Features
 
+* Supported Opera, Chrome and Firefox
+* Working with keyboard (high speed!)
+* Stored in browser or at server
+* Tree structucture
+* Duration auto calculation 
 * Autosave
-* Copy table to clipboard
-* Export/import
+* Copy table to clipboard using rich text
+* Export/import using CSV
+* Share among others by URL
+
+### History
+
+* 2011-09-15
+    * Fixed bugs with Chrome and Opera browsers
+    * Added Clear button
+* 2001-09-06 
+    * Added sharing to others. It's not allowed to edit one plan from other computer or browser.
+    * Changed keyboard shortcuts
+    * Added total duration to exported table
+* 2001-07-15 
+    * Added disqus
+    * Added total duration
+* 2001-07-11 
+    * Added help and other panels
+    * Improved copy to clipboard
+    * Added import/export to csv
+                    
+                
