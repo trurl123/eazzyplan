@@ -146,16 +146,21 @@
     
     recalcDuration : function(rc, noRecursive) {
         var t = this, 
-            duration = 0, childs;
+            duration = 0, childs, d, wasChilds = 0;
         if (rc) {
             childs = t.getNodeChildren(rc);
         } else {
             childs = t.getRootNodes();
         }
         $.each(childs, function() {
-            duration += parseFloat(this.duration);
+            d = parseFloat(this.duration);
+            if (isNaN(d)) {
+                d = 0;
+            }
+            duration += d;
+            wasChilds = 1;
         });
-        if (rc) {
+        if (rc && wasChilds) {
             rc.duration = duration;
             t.setCell(rc.id,'duration',duration,false,false,true);
         }
@@ -513,7 +518,11 @@
                 if (dur[stor[i].level-1] === undefined) {
                     dur[stor[i].level-1] = 0;
                 }
-                dur[stor[i].level-1] += parseFloat(stor[i].duration);
+                curDur = parseFloat(stor[i].duration);
+                if (isNaN(curDur)) {
+                    curDur = 0;
+                }
+                dur[stor[i].level-1] += curDur;
             } 
         }
     },
@@ -566,9 +575,9 @@
             }
             $t.lastEdited=row.id;
             duration = t.getCell($t.lastEdited,'duration');
-            if (duration === "0") {
-                t.setCell($t.lastEdited,'duration',"",false,false,true); 
-            }
+            //if (duration === "0") {
+            //    t.setCell($t.lastEdited,'duration',"",false,false,true); 
+            //}
             t.editRow(row.id,true,null,null,'clientArray',{},
                 function() { 
                     t.setSelection($t.lastEdited,false);
