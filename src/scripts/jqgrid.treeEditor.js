@@ -148,9 +148,9 @@
         var t = this, 
             duration = 0, childs;
         if (rc) {
-	        childs = t.getNodeChildren(rc);
+            childs = t.getNodeChildren(rc);
         } else {
-        	childs = t.getRootNodes();
+            childs = t.getRootNodes();
         }
         $.each(childs, function() {
             duration += parseFloat(this.duration);
@@ -160,14 +160,14 @@
             t.setCell(rc.id,'duration',duration,false,false,true);
         }
         if (!rc) {
-        	t.footerData("set",{duration:duration});
+            t.footerData("set",{duration:duration});
         }
         if (rc && !noRecursive) {
-	        if (rc.parent) {
-	            t.recalcDuration(t.getRc(rc.parent));
-	        } else {
-	            t.recalcDuration(null);
-	        }
+            if (rc.parent) {
+                t.recalcDuration(t.getRc(rc.parent));
+            } else {
+                t.recalcDuration(null);
+            }
         }
     },
     
@@ -504,16 +504,16 @@
             }
         }
         for (i=stor.length-1; i>=0; i--) {
-        	if (!stor[i].isLeaf) {
-        		stor[i].duration = dur[stor[i].level];
-        		dur[stor[i].level] = 0;
-        	}
-    		if (stor[i].level>0) {
-	        	if (dur[stor[i].level-1] === undefined) {
-	        		dur[stor[i].level-1] = 0;
-	        	}
-	        	dur[stor[i].level-1] += parseFloat(stor[i].duration);
-        	} 
+            if (!stor[i].isLeaf) {
+                stor[i].duration = dur[stor[i].level];
+                dur[stor[i].level] = 0;
+            }
+            if (stor[i].level>0) {
+                if (dur[stor[i].level-1] === undefined) {
+                    dur[stor[i].level-1] = 0;
+                }
+                dur[stor[i].level-1] += parseFloat(stor[i].duration);
+            } 
         }
     },
 
@@ -539,15 +539,15 @@
         } catch (e) {
         }
         if (!stor) {
-	        t.addRowData(1,{id:'1',isLeaf:false,level:0,name:'Task1',parent:null,
+            t.addRowData(1,{id:'1',isLeaf:false,level:0,name:'Task1',parent:null,
                 duration:1, expanded: true},'last',null);
-	        t.addRowData(2,{id:'2',isLeaf:true,level:1,name:'Task2',parent:1,
+            t.addRowData(2,{id:'2',isLeaf:true,level:1,name:'Task2',parent:1,
                 duration:1},'last',null);
-	        t.addRowData(3,{id:'3',isLeaf:true,level:0,name:'Task3',parent:null,
+            t.addRowData(3,{id:'3',isLeaf:true,level:0,name:'Task3',parent:null,
                 duration:1},'last',null);
-	        for (i=1; i<=3; i++) {
+            for (i=1; i<=3; i++) {
                 t.updateRow(t.getRc(i));
-			}
+            }
             t.recalcDuration(null);
             return;
         }
@@ -595,7 +595,7 @@
             $(t.getRow($t.lastEdited)).focus();
             $t.lastEdited = null;
             if (!noRaise) {
-            	t.raiseSave();
+                t.raiseSave();
             }
         }
     },
@@ -684,6 +684,13 @@
             t.setSelection(id,false);
             $(t.getRow(id)).focus();
         }
+    },
+
+    removeAll: function() {
+        var t=this;
+        t.clearGridData();
+        t.recalcDuration(null);
+        t.raiseSave();
     }
 
 });})(jQuery);
@@ -722,12 +729,11 @@ $.createUUID = function () {
 
 $.extend({
     initPlanEditor: function() {
-        var t = $("#tasklist"), $t = t[0], id;
         if (localStorage['userid'] === undefined || localStorage['userid'] === null || localStorage['userid'].length!==32) {
             localStorage['userid'] = $.createUUID(); 
         }
         window.disqus_shortname = undefined;
-        t.jqGrid({
+        $("#tasklist").jqGrid({
             treeGrid: true,
             treeGridModel: 'adjacency',
             ExpandColumn : 'name',
@@ -738,18 +744,23 @@ $.extend({
             height: '100%',
             colNames:['Name', 'Duration','ID'],
             colModel:[
-                {name:'name',index:'name', width:300, editable: true, editoptions:{maxlength:"300"}, sortable: false}, //size:"20"
-                {name:'duration',index:'duration',align:"right", width:90, editable: true, sortable: false },
+                {name:'name',index:'name', width:300, editable: true, editoptions:{maxlength:"300", autocomplete:"off"}, sortable: false}, //size:"20"
+                {name:'duration',index:'duration',align:"right", width:90, editable: true, editoptions:{autocomplete:"off"}, sortable: false },
                 {name:'id', index:'id', width:50, sorttype:"int", editable: false, sortable: false}
             ],
             onSelectRow: function(id){
-                t.startEdit(t.getRow(id));
+                //t.startEdit(t.getRow(id));
             },
             onRaiseSave: function() {
                 $("#saveBtn").button({ disabled: false });
             },
             onSave: function() {
                 $("#saveBtn").button({ disabled: true });
+            },
+            onCellSelect: function(id,iCol,cellcontent,e) {
+                var t = $("#tasklist"), r = t.getRow(id);
+                t.startEdit(r);
+                $("td:eq("+iCol+") input",r).focus().select();
             },
             footerrow: true 
         });
@@ -772,9 +783,14 @@ $.extend({
                 t.selNextRow(target);
             }
             //insert
-            else if(event.which === 45 && !event.ctrlKey && !event.shiftKey) {
+            else if(event.which === 45 && !event.ctrlKey && !event.altKey && !event.shiftKey) {
                 event.preventDefault();
-                t.insertEmpty(rc, !event.altKey);
+                t.insertEmpty(rc, false);
+            }
+            //insert prev
+            else if(event.which === 45 && event.ctrlKey && event.altKey && !event.shiftKey) {
+                event.preventDefault();
+                t.insertEmpty(rc, true);
             }
             if (target) {
                 //up arrow
@@ -815,6 +831,7 @@ $.extend({
             }
         });
 
+        var t = $("#tasklist"), $t = t[0], id;
         $t.planShared = false;
         if (window.location.hash !== "") {
             $.callAJAX({ action: 'getPlan', id: window.location.hash.substr(1), userid: localStorage['userid']}, function(result) {
@@ -844,7 +861,7 @@ $.extend({
         $(".button").button();
         $("#saveBtn").button({ disabled: true });
         $("#saveBtn").click( function() {
-        	t.finishEdit(true);
+            t.finishEdit(true);
             t.savePlan(function() {
                 $.showPopup('Successfully saved');
             });
@@ -954,6 +971,12 @@ $.extend({
                     },'json');
                 });
             }
+        });
+
+        $('#clearBtn').click(function() {
+            $.okCancelDialog('Remove all items?','Clear',function() {
+                t.removeAll();
+            });
         });
     }
 });

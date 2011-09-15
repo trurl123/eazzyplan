@@ -2561,7 +2561,7 @@ $.jgrid.extend({
                         nm = $t.p.colModel[i].name;
                         if ( nm !== 'cb' && nm !== 'subgrid' && nm !== 'rn') {
                             if($t.p.treeGrid===true && nm == $t.p.ExpandColumn) {
-                                res[nm] = $.jgrid.htmlDecode($("span:first",this).text());
+                                res[nm] = $.jgrid.htmlDecode($(".cell-wrapper-div:first",this).text());
                             } else {
                                 try {
                                     res[nm] = $.unformat(this,{rowId:ind.id, colModel:$t.p.colModel[i]},i);
@@ -2630,7 +2630,7 @@ $.jgrid.extend({
                             vl = t.formatter( rowid, data[nm], i, data, 'edit');
                             title = this.title ? {"title":$.jgrid.stripHtml(vl)} : {};
                             if(t.p.treeGrid===true && nm == t.p.ExpandColumn) {
-                                $("td:eq("+i+") > span:first",ind).html(vl).attr(title);
+                                $("td:eq("+i+") > .cell-wrapper-div:first",ind).html(vl).attr(title);
                             } else {
                                 $("td:eq("+i+")",ind).html(vl).attr(title);
                             }
@@ -8142,7 +8142,6 @@ $.jgrid.extend({
             "restoreAfterErorr" : true
         },
         args = $.makeArray(arguments).slice(1), o;
-
         if(args[0] && typeof(args[0]) == "object" && !$.isFunction(args[0])) {
             o = $.extend(settings,args[0]);
         } else {
@@ -8160,7 +8159,7 @@ $.jgrid.extend({
                 $('td',ind).each( function(i) {
                     nm = cm[i].name;
                     var treeg = $t.p.treeGrid===true && nm == $t.p.ExpandColumn;
-                    if(treeg) { tmp = $("span:first",this).text();}
+                    if(treeg) { tmp = $(".cell-wrapper-div",this).text();}
                     else {
                         try {
                             tmp =  $.unformat(this,{rowId:rowid, colModel:cm[i]},i);
@@ -8173,14 +8172,14 @@ $.jgrid.extend({
                         svr[nm]=tmp;
                         if(cm[i].editable===true) {
                             if(focus===null) { focus = i; }
-                            if (treeg) { $("span:first",this).html(""); }
+                            if (treeg) { $(".cell-wrapper-div:first",this).html(""); }
                             else { $(this).html(""); }
                             var opt = $.extend({},cm[i].editoptions || {},{id:rowid+"_"+nm,name:nm});
                             if(!cm[i].edittype) { cm[i].edittype = "text"; }
                             if(tmp == "&nbsp;" || tmp == "&#160;" || (tmp.length==1 && tmp.charCodeAt(0)==160) ) {tmp='';}
                             var elc = $.jgrid.createEl(cm[i].edittype,opt,tmp,true,$.extend({},$.jgrid.ajaxOptions,$t.p.ajaxSelectOptions || {}));
                             $(elc).addClass("editable");
-                            if(treeg) { $("span:first",this).append(elc); }
+                            if(treeg) { $(".cell-wrapper-div:first",this).append(elc); }
                             else { $(this).append(elc); }
                             //Again IE
                             if(cm[i].edittype == "select" && cm[i].editoptions.multiple===true && $.browser.msie) {
@@ -9260,7 +9259,7 @@ $.jgrid.extend({
                     ident = curLevel;
                     lftpos = curLevel -1;
                 }
-                twrap = "<div class='tree-wrap tree-wrap-"+$t.p.direction+"' style='width:"+(ident*18)+"px;'>";
+                twrap = "<div class='tree-wrap tree-wrap-"+$t.p.direction+"' style='float:left; width:"+(ident*18)+"px;'>";
                 twrap += "<div style='"+($t.p.direction=="rtl" ? "right:" : "left:")+(lftpos*18)+"px;' class='ui-icon ";
 
 
@@ -9287,7 +9286,7 @@ $.jgrid.extend({
                 }
                 
                 twrap += "</div></div>";
-                $($t.rows[i].cells[expCol]).wrapInner("<span class='cell-wrapper"+lf+"'></span>").prepend(twrap);
+                $($t.rows[i].cells[expCol]).wrapInner("<div class='cell-wrapper-div cell-wrapper"+lf+"' style='float:left; width:"+(300-ident*18-5)+"px;'></div>").prepend(twrap);
 
                 if(curLevel !== parseInt($t.p.tree_root_level,10)) {
                     var pn = $($t).jqGrid('getNodeParent',ldat);
@@ -9315,7 +9314,7 @@ $.jgrid.extend({
                     });
                 if($t.p.ExpandColClick === true) {
                     $($t.rows[i].cells[expCol])
-                        .find("span.cell-wrapper")
+                        .find("div.cell-wrapper")
                         .css("cursor","pointer")
                         .bind("click",function(e) {
                             var target = e.target || e.srcElement,
@@ -9810,7 +9809,7 @@ $.jgrid.extend({
                         parentdata[expanded] = true;
                         //var prow = $($t).jqGrid('getInd', parentid);
                         $($t.rows[prow])
-                            .find("span.cell-wrapperleaf").removeClass("cell-wrapperleaf").addClass("cell-wrapper")
+                            .find("div.cell-wrapperleaf").removeClass("cell-wrapperleaf").addClass("cell-wrapper")
                             .end()
                             .find("div.tree-leaf").removeClass($t.p.treeIcons.leaf+" tree-leaf").addClass($t.p.treeIcons.minus+" tree-minus");
                         $t.p.data[parentindex][isLeaf] = false;

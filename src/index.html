@@ -81,22 +81,22 @@
             <table id="tasklist" summary="">
             </table>
             <div class='buttons'>
-                <div id='saveBtn' class='button inline'>Save</div>
-                <div id='shareBtn' class='button inline'>Share</div>
+                <div id='saveBtn' class='button inline' title='Save plan to browser or to server in case of sharing'>Save</div>
+                <div id='shareBtn' class='button inline' title='Save plan to server and build URL for sharing'>Share</div>
+                <div id='clearBtn' class='button inline' title='Remove all items'>Clear</div>
             </div>
             <div class='smallButtons'>
-                <div id="rtfBtnOwner" style="position:relative;" class="inline">
+                <div id="rtfBtnOwner" style="position:relative;" class="inline" title='Copy plan to clipboard using rich text'>
                     <div id='rtfBtn' class='button' >Copy table</div>
                 </div>
-                <div id="csvBtnOwner" style="position:relative;" class="inline">
+                <div id="csvBtnOwner" style="position:relative;" class="inline" title='Copy plan to clipboard using CSV'>
                     <div id='csvBtn' class='button' >Copy CSV</div>
                 </div>
-                <div id='pasteBtn' class='button inline'>Import CSV</div>
+                <div id='pasteBtn' class='button inline' title='Open dialog to paste CSV text to import'>Import CSV</div>
             </div>
             <div class='smallButtons'>
                 <div id='helpBtn' class='button panelButton' >Help</div>
-                <div id='featuresBtn' class='button panelButton' >Features</div>
-                <div id='historyBtn' class='button panelButton' >History</div>
+                <div id='featuresBtn' class='button' onclick="window.open('https://github.com/trurl123/eazzyplan#readme','_blank');">Features and history</div>
                 <div id='disqusBtn' class='button panelButton' >Disqus</div>
             </div>
         </div>
@@ -116,47 +116,10 @@
                 <tr><td>Alt+Ctrl+Left</td><td>Move left</td></tr>
                 <tr><td>Alt+Ctrl+right</td><td>Move right</td></tr>
                 <tr><td>Insert</td><td>Insert row after current</td></tr>
-                <tr><td>Alt+Insert</td><td>Insert row before current</td></tr>
+                <tr><td>Alt+Ctrl+Insert</td><td>Insert row before current</td></tr>
                 <tr><td>F2</td><td>Edit</td></tr>
                 <tr><td>Ctrl+Del</td><td>Remove subtree</td></tr>
             </table>
-        </div>
-        <div id='featuresPanel' class='panel'>
-            <h2>Features</h2>
-		    <p>Ultra light project plan editor. It's a simple tool to create tree structure of tasks with automatic 
-		    calculation of duration. All data stored in browser using HTML5 feature. Main feature is working with keyboard.
-	        It helps to create plans rapidly.            </p>
-			<ul>
-                <li>Autosave</li>
-                <li>Copy table to clipboard</li>
-                <li>Export/import</li>
-                <li>Share among others</li>
-            </ul>
-        </div>
-        <div id='historyPanel' class='panel'>
-            <h2>History</h2>
-            <ul>
-                <li>2001-09-06 
-                    <ul>
-                        <li>Added sharing to others. It's not allowed to edit one plan from other computer or browser.</li>
-                        <li>Changed keyboard shortcuts</li>
-                        <li>Added total duration to exported table</li>
-                    </ul>
-                </li>
-                <li>2001-07-15 
-                    <ul>
-                        <li>Added disqus</li>
-                        <li>Added total duration</li>
-                    </ul>
-                </li>
-                <li>2001-07-11 
-                    <ul>
-                        <li>Added help and other panels</li>
-                        <li>Improved copy to clipboard</li>
-                        <li>Added import/export to csv</li>
-                    </ul>
-                </li>
-            </ul>
         </div>
         <div id='pasteDialog' >
             <div>Paste text into text area and press Import. All data will be lost.</div>
