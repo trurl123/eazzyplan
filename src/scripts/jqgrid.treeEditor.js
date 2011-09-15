@@ -422,6 +422,7 @@
             id = this;
             stor.push(t.getRc(id));
         });
+        t.fixItemsArray(stor);
         return JSON.stringify(stor);
     },
 
@@ -457,7 +458,7 @@
         localStorage['tasklist'] = t.exportJSON();
     }, 
 
-    fixLoadedList: function(stor) {
+    fixItemsArray: function(stor) {
         var  
             i, index = {}, parents = [], lastLevel = 0, id, dur=[], curDur;
         for (i=0; i<stor.length; i++) {
@@ -644,7 +645,7 @@
         var t = this, 
             rc, i;
         t.clearGridData();
-        t.fixLoadedList(stor);
+        t.fixItemsArray(stor);
         for (i=0; i<stor.length; i++) {
             rc = stor[i];
             t.addRowData(rc.id,rc,'last');
