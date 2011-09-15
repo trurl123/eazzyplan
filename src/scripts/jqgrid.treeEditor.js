@@ -155,7 +155,7 @@
         $.each(childs, function() {
             duration += parseFloat(this.duration);
         });
-        if (duration>0 && rc) {
+        if (rc) {
             rc.duration = duration;
             t.setCell(rc.id,'duration',duration,false,false,true);
         }
@@ -842,6 +842,7 @@ $.extend({
                         $t.planShared = true;
                         $.showPopup('Loaded your own plan');
                         $("#shareBtn").button({ label: 'Unshare' });
+                        $("#shareBtn").attr('title', 'Stop to store current plan to server');
                     } else {
                         $.messageBox('Loaded shared plan. All changes will not be uploaded to server.','Loaded');
                     }
@@ -967,6 +968,7 @@ $.extend({
                         window.location.hash = '#'+result;
                         $.messageBox('The plan is saved to server. Now you can send current URL to friends and use it to edit.');
                         $("#shareBtn").button({ label: 'Unshare' });
+                        $("#shareBtn").attr('title', 'Stop to store current plan to server');
                         $t.planShared = true;
                     },'json');
                 });
