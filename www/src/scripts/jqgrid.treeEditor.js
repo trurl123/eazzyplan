@@ -12,7 +12,7 @@
 //jsHint options
 /*global document, window, jQuery, DOMParser, ActiveXObject, localStorage, ZeroClipboard, console, $ */
 
-(function($) {  $.jgrid.extend({
+;(function($) {  $.jgrid.extend({
 
     getRow : function(id) {
         return this.getInd(id,true);
@@ -94,7 +94,9 @@
     },
 
     updateRow : function(rc) {
-        var rowInd = this.getInd(rc.id);
+        var rowInd = this.getInd(rc.id),
+            row = this.getRow(rc.id),
+            div, parent;
         if (rc.parent) {
             rc.level = this.getRc(rc.parent).level+1;            
         } else {
@@ -102,6 +104,13 @@
         }
         rc.loaded = true;
         $('#'+rc.id+' .tree-wrap').remove();
+        div = $('.cell-wrapper-div',row);
+        if (div) {
+            parent = div.parent();
+            parent.prepend(div.contents())
+            div.remove();
+            //parent.html(div.html());
+        }
         this.setTreeNode(rowInd,rowInd+1);
     },
 
@@ -420,8 +429,7 @@
     
     exportJSON: function() {
         var t = this, 
-            id, ids, stor = [],
-            $t = t[0];
+            id, ids, stor = [];
         ids = t.getDataIDs();
         $.each(ids, function() {
             id = this;
@@ -458,8 +466,7 @@
     },
     
     saveToLocalStorage: function() {
-        var t = this, 
-            $t = t[0];
+        var t = this;
         localStorage['tasklist'] = t.exportJSON();
     }, 
 
@@ -529,8 +536,7 @@
 
     importJSON: function(json) {
         var t = this, 
-            rc, 
-            stor, i;
+            stor;
         try {    
             stor = JSON.parse(json);
             t.loadArray(stor);
@@ -542,7 +548,6 @@
     
     loadFromLocalStorage: function() {
         var t = this, 
-            rc, 
             stor, i;
         try {    
             stor = JSON.parse(localStorage['tasklist']);
@@ -705,39 +710,37 @@
 
 });})(jQuery);
 
-$.callAJAX = function(postData, func) {
-    $.post('ajax.php',postData, function(data, textStatus) {
-        if (!data) {
-            $.showPopup('Something goes wrong...');
-        } else if (data.error !== undefined) {
-            $.showPopup(data.error);
-        } else if (data.ok !== undefined) {
-            func(data.result);
-        } else {
-            $.showPopup('Something goes wrong: ' + data);
-        }
-    },'json');
-};
-
-$.createUUID = function () {
-    // http://www.ietf.org/rfc/rfc4122.txt
-    var s = [];
-    var hexDigits = "0123456789ABCDEF";
-    for (var i = 0; i < 32; i++) {
-        s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
-    }
-    s[12] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
-    s[16] = hexDigits.substr((s[16] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
-
-    var uuid = s.join("");
-    return uuid;
-};
-
-
-
 (function($) {
 
 $.extend({
+
+    callAJAX : function(postData, func) {
+        $.post('ajax.php',postData, function(data, textStatus) {
+            if (!data) {
+                $.showPopup('Something goes wrong...');
+            } else if (data.error !== undefined) {
+                $.showPopup(data.error);
+            } else if (data.ok !== undefined) {
+                func(data.result);
+            } else {
+                $.showPopup('Something goes wrong: ' + data);
+            }
+        },'json');
+    },
+
+    createUUID : function () {
+        // http://www.ietf.org/rfc/rfc4122.txt
+        var s = [];
+        var hexDigits = "0123456789ABCDEF";
+        for (var i = 0; i < 32; i++) {
+            s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+        }
+        s[12] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
+        s[16] = hexDigits.substr((s[16] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
+
+        return s.join("");
+    },
+
     initPlanEditor: function() {
         if (localStorage['userid'] === undefined || localStorage['userid'] === null || localStorage['userid'].length!==32) {
             localStorage['userid'] = $.createUUID(); 
@@ -758,16 +761,16 @@ $.extend({
                 {name:'duration',index:'duration',align:"right", width:90, editable: true, editoptions:{autocomplete:"off"}, sortable: false },
                 {name:'id', index:'id', width:50, sorttype:"int", editable: false, sortable: false}
             ],
-            onSelectRow: function(id){
+            //onSelectRow: function(id){
                 //t.startEdit(t.getRow(id));
-            },
+            //},
             onRaiseSave: function() {
                 $("#saveBtn").button({ disabled: false });
             },
             onSave: function() {
                 $("#saveBtn").button({ disabled: true });
             },
-            onCellSelect: function(id,iCol,cellcontent,e) {
+            onCellSelect: function(id,iCol) {
                 var t = $("#tasklist"), r = t.getRow(id);
                 t.startEdit(r);
                 $("td:eq("+iCol+") input",r).focus().select();
@@ -844,12 +847,11 @@ $.extend({
         var t = $("#tasklist"), $t = t[0], id;
         $t.planShared = false;
 
-        $('#loading').ajaxError(function(event, request, settings) {
+        $('#loading').ajaxError(function() {
             $(this).hide();
             $.messageBox("AJAX error",'Error');
         });
         if (window.location.hash !== "") {
-            $('#loading').show();
             $.callAJAX({ action: 'getPlan', id: window.location.hash.substr(1), userid: localStorage['userid']}, function(result) {
                 $('#loading').hide();
                 var own = result.substr(0,1);
@@ -874,6 +876,7 @@ $.extend({
                 t.loadFromLocalStorage();
             }
             t.initFocus();
+            $('#loading').hide();
         }
         
         $(".button").button();
@@ -897,8 +900,9 @@ $.extend({
                         // The following are highly recommended additional parameters. Remove the slashes in front to use.
                         var disqus_identifier = 'eazzyplan';
                         var disqus_url = 'http://wiki4tech.ru/eazzyplan/';
+                        var disqus_developer = 0;
                         if (!window.productionMode) {
-                            var disqus_developer = 1;
+                            disqus_developer = 1;
                         }
                     
                         /* * * DON'T EDIT BELOW THIS LINE * * */
@@ -958,12 +962,12 @@ $.extend({
         clip2.setHandCursor( true );
         clip2.setCSSEffects( false );
 
-        clip2.addEventListener( 'mouseDown', function(client) { 
+        clip2.addEventListener( 'mouseDown', function() {
             // set text to copy here
             clip2.setText( t.exportCSV() );
             //alert("mouse down"); 
         } );
-        clip2.addEventListener('complete', function (client, text) {
+        clip2.addEventListener('complete', function () {
             $.showPopup("CSV copied to clipboard");
         });
         //clip.addEventListener('load', function (client) {

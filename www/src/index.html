@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="styles/styles.css" type="text/css" />
 
     <script src="scripts/LAB.min.js" type="text/javascript"></script>
-    <!--script src="scripts/jquery-1.5.2.min.js" type="text/javascript"></script-->
+    <!--script src="scripts/jquery.js" type="text/javascript"></script-->
     <!--script src="scripts/jquery-1.5.2.min.js" type="text/javascript"></script>
     <script src="scripts/jquery-ui-1.8.14.custom.min.js" type="text/javascript" ></script>
     <script src="scripts/jquery.jqGrid.src.js" type="text/javascript"></script>
@@ -19,8 +19,8 @@
     <script src="scripts/json-serialization.min.js"loadScript/javascript"></script>
     <script src="scripts/ZeroClipboard.miscript"text/javascript" ></script--> 
     <script type="text/javascript">
-        if (document.URL.indexOf('/debug') == -1) {
-            productionMode = true;
+        if (document.URL.indexOf('/src') == -1) {
+            window.productionMode = true;
             $LAB
                 .script("http://yandex.st/jquery/1.6.2/jquery.min.js").wait()
                 .script("http://yandex.st/jquery-ui/1.8.11/jquery-ui.min.js")
@@ -30,10 +30,10 @@
                     }
                 );
         } else {
-            productionMode = false;
+            window.productionMode = false;
             $LAB
-                .script("scripts/jquery-1.5.2.min.js").wait()
-                .script("scripts/jquery-ui-1.8.14.custom.min.js")
+                .script("scripts/jquery.js").wait()
+                .script("scripts/jquery-ui.js")
                 .script("scripts/jquery.jqGrid.js")
                 .script("scripts/jqgrid.treeEditor.js")
                 .script("scripts/messageBox.js")
@@ -53,7 +53,7 @@
               version = parseFloat(navigator.appVersion.split("MSIE")[1]);
             return version;
           }
-        }
+        };
         if (Browser.Version() < 9 || window.localStorage == undefined) {
             alert('Your browser is too old. Please upgrade your browser.');
         }        
@@ -74,10 +74,10 @@
 </head>
 <body>
 <div class='container'>
-    <div class='header'>
-    </div>
+    <a href=""><div class='header'><img src="images/header.png" alt="Eazzy Plan"/>
+    </div></a>
     <div class='content'>
-        <div id='loading' style='display:none;'></div>
+        <div id='loading'></div>
         <div id='mainPanel'>
             <table id="tasklist" summary="">
             </table>

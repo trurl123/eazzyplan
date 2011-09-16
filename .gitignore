@@ -1,3 +1,5 @@
 .metadata/
+.idea/
 build/
-www/
+www/debug
+www/release

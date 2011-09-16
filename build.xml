@@ -1,25 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="EazzyPlan" default="_debug" basedir="./src">
-	<property name="build" value="../build" />
+<project name="EazzyPlan" default="_release" basedir="./www/src">
+	<property name="build" value="../../build" />
 	<mkdir dir="${build}" />
 
 	<target name="_release" depends="release.prop, copy, js.minify" description="Release build">
 	</target>
 	<target name="release.prop">
-		<property name="output" value="../www/release" />
-	</target>
+		<property name="output" value="../release" />
+        <delete includeemptydirs="true" dir="../www/release">
+		</delete>
+    </target>
 
 	<target name="_debug" depends="debug.prop, copy, js.copy" description="Debug build">
 	</target>
 	<target name="debug.prop">
-		<property name="output" value="../www/debug" />
+		<property name="output" value="../debug" />
 	</target>
 
 	<target name="js.concatenate">
+        <delete file="${build}/main.js"/>
 		<concat destfile="${build}/main.js">
 			<fileset dir="./scripts" >
 				<include name="*.js"/>
-				<exclude name="*.min.js"/>
+                <exclude name="LAB.min.js"/>
+				<exclude name="jquery.js"/>
+                <exclude name="jquery-ui.js"/>
 				<exclude name="jqgrid.treeEditor.js"/>
 			</fileset>
 			<fileset dir="./scripts" includes="jqgrid.treeEditor.js" />
@@ -31,15 +36,15 @@
 		<copy todir="${output}">
 			<fileset dir="." includes="scripts/LAB.min.js" />
 		</copy>
-		<apply executable="java" parallel="false" dest="${output}/scripts">
-			<!--fileset dir="./scripts" includes="*.js" excludes="*.min.js"  /-->
+        <exec command="yuicompressor.bat -o ${output}/scripts/main.min.js ${build}/main.js"/>
+		<!--apply executable="java" parallel="false" dest="${output}/scripts">
 			<fileset file="${build}/main.js" />
 			<arg line="-jar" />
-			<arg path="${js.compiler}" />
+			<arg path="C:\App\closure\compiler.jar" />
 			<arg line="-o" />
 			<mapper type="glob" from="*.js" to="*.min.js" />
 			<targetfile />
-		</apply>
+		</apply-->
 	</target>
 
 	<target name="copy">
@@ -58,7 +63,8 @@
 
 	<target name="clean">
 		<delete includeemptydirs="true">
-			<fileset dir="../www" />
+			<fileset dir="../www/debug" />
+            <fileset dir="../www/release" />
 		</delete>
 	</target>
 
