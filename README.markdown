@@ -16,6 +16,8 @@ Ultra light project plan editor.
 
 * 2011-09-16
     * Design improvements
+    * Moved from ant to phing
+    * Fixed error with duplcating name
 * 2011-09-15
     * Fixed bugs with Chrome and Opera browsers
     * Added Clear button

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="EazzyPlan" default="_release" basedir="./www/src">
+<project name="EazzyPlan" default="_release" basedir="www/src">
 	<property name="build" value="../../build" />
 	<mkdir dir="${build}" />
 
@@ -7,7 +7,7 @@
 	</target>
 	<target name="release.prop">
 		<property name="output" value="../release" />
-        <delete includeemptydirs="true" dir="../www/release">
+        <delete includeemptydirs="true" dir="../release">
 		</delete>
     </target>
 
@@ -63,8 +63,8 @@
 
 	<target name="clean">
 		<delete includeemptydirs="true">
-			<fileset dir="../www/debug" />
-            <fileset dir="../www/release" />
+			<fileset dir="../debug" />
+            <fileset dir="../release" />
 		</delete>
 	</target>
 
