@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="EazzyPlan" default="_debug" basedir="./src">
-	<description>
-        simple example build file
-    </description>
-	<property name="build" location="../build" />
+	<property name="build" value="../build" />
 	<mkdir dir="${build}" />
 
 	<target name="_release" depends="release.prop, copy, js.minify" description="Release build">
 	</target>
 	<target name="release.prop">
-		<property name="output" location="../www/release" />
+		<property name="output" value="../www/release" />
 	</target>
 
 	<target name="_debug" depends="debug.prop, copy, js.copy" description="Debug build">
 	</target>
 	<target name="debug.prop">
-		<property name="output" location="../www/debug" />
+		<property name="output" value="../www/debug" />
 	</target>
 
 	<target name="js.concatenate">
