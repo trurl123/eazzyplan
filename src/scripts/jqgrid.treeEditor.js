@@ -843,8 +843,15 @@ $.extend({
 
         var t = $("#tasklist"), $t = t[0], id;
         $t.planShared = false;
+
+        $('#loading').ajaxError(function(event, request, settings) {
+            $(this).hide();
+            $.messageBox("AJAX error",'Error');
+        });
         if (window.location.hash !== "") {
+            $('#loading').show();
             $.callAJAX({ action: 'getPlan', id: window.location.hash.substr(1), userid: localStorage['userid']}, function(result) {
+                $('#loading').hide();
                 var own = result.substr(0,1);
                 result = result.substr(1);
                 if (t.importJSON(result)) {

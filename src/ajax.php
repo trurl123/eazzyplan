@@ -74,7 +74,7 @@ class AjaxController {
     private function genPlanId() {
         for ($i=0; $i<1000; $i++) {
             $id = generate_random_letters(self::PLAN_ID_LENGTH);
-            WriteLog('id='.$id);
+            //WriteLog('id='.$id);
             $planPath = $this->plansDir . "/" . $id;
             if (!file_exists($planPath)) {
                 break;
