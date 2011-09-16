@@ -14,9 +14,12 @@ Ultra light project plan editor.
 
 ### History
 
+* 2011-09-16
+    * Design improvements
 * 2011-09-15
     * Fixed bugs with Chrome and Opera browsers
     * Added Clear button
+    * Fixed problems with Duration field
 * 2001-09-06 
     * Added sharing to others. It's not allowed to edit one plan from other computer or browser.
     * Changed keyboard shortcuts
